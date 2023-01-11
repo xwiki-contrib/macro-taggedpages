@@ -273,12 +273,13 @@
 ## Display
 ##
 #if ($documentRefsList.size() &gt; 0)
-  (%class='taggedpages-list $!cssClass'%)
-  #foreach($taggedDocRef in $documentRefsList)
+  (%class='taggedpages-list $services.rendering.escape($!cssClass)'%)
+  #foreach( $taggedDocRef in $documentRefsList)
     ## The next piece of code is not awfully efficient, we could optimize it if we notice that we're loading too many documents in memory
     ## I preferred this in order to be able to get the computed title, just in case it's used.
-    #set($taggedDoc = $xwiki.getDocument($taggedDocRef))
-    * [[$services.rendering.escape($taggedDoc.displayTitle, $wikimacro.doc.syntax)&gt;&gt;$services.rendering.escape($taggedDoc.fullName, $wikimacro.doc.syntax)]]
+    #set ($taggedDoc = $xwiki.getDocument($taggedDocRef))
+    #set ($taggedDocTitle = $services.rendering.escape($services.rendering.escape($taggedDoc.displayTitle, $wikimacro.doc.syntax), $wikimacro.doc.syntax))
+    * [[$taggedDocTitle&gt;&gt;$services.rendering.escape($taggedDoc.fullName, $wikimacro.doc.syntax)]]
   #end
 #end
 {{/velocity}}</code>
