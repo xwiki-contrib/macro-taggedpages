@@ -52,4 +52,16 @@
       <name>Clément Desableau</name>
     </developer>
   </developers>
+  <dependencies>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-model-api</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-tag-api</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+  </dependencies>
 </project>
