@@ -34,7 +34,8 @@
   <packaging>xar</packaging>
   <description>Lists the pages tagged with the passed tag, from the document tree passed as parameter</description>
   <properties>
-    <xwiki.release.jira.skip>true</xwiki.release.jira.skip>
+    <xwiki.issueManagement.jira.id>XTPM</xwiki.issueManagement.jira.id>
+    <xwiki.release.jira.skip>false</xwiki.release.jira.skip>
     <xwiki.extension.category>macro</xwiki.extension.category>
   </properties>
   <scm>
