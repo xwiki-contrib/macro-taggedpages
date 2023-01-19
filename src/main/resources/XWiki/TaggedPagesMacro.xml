@@ -253,31 +253,49 @@
 #if ($tree != '')
   #set($treeRef = $services.model.resolveSpace($tree, 'current'))
 #end
+##
+## Find pages
+##
 #set ($documentWithTagsList = $xwiki.tag.getDocumentsWithTag($tag))
-#set ($documentRefsList = [])
+#set ($documentList = [])
 #foreach ($dName in $documentWithTagsList)
   #set($dRef = $services.model.resolveDocument($dName, 'current'))
   #if ($treeRef != $NULL)
     ## check if the page is in the passed tree
     #if ($dRef.hasParent($treeRef))
-      #set ($discard = $documentRefsList.add($dRef))
+      #set ($discard = $documentList.add($xwiki.getDocument($dRef)))
     #end
   #else
-    #set ($discard = $documentRefsList.add($dRef))
+    #set ($discard = $documentList.add($xwiki.getDocument($dRef)))
   #end
-  #if ($documentRefsList.size() == $limit)
+  #if ($documentList.size() == $limit)
     #break
   #end
 #end
 ##
+## Sort
+##
+#set ($sortMap = {
+  "updateDate": { "property": "contentUpdateDate", "defaultOrder": "desc" },
+  "creationDate": { "property": "creationDate", "defaultOrder": "desc" },
+  "title": { "property": "plainTitle", "defaultOrder": "asc" }
+})
+#set ($parameterSortBy = "$!wikimacro.parameters.sortBy")
+#set ($parameterSortOrder = "$!wikimacro.parameters.sortOrder")
+#set ($sortMapObject = $sortMap[$parameterSortBy])
+#set ($sortBy = $sortMapObject.property)
+#if ("$!parameterSortOrder" != '')
+  #set ($sortOrder = $parameterSortOrder)
+#else
+  #set ($sortOrder = $sortMapObject.defaultOrder)
+#end
+#set ($documentList = $collectiontool.sort($documentList, "$sortBy:$sortOrder"))
+##
 ## Display
 ##
-#if ($documentRefsList.size() &gt; 0)
+#if ($documentList.size() &gt; 0)
   (%class='taggedpages-list $services.rendering.escape($!cssClass)'%)
-  #foreach( $taggedDocRef in $documentRefsList)
-    ## The next piece of code is not awfully efficient, we could optimize it if we notice that we're loading too many documents in memory
-    ## I preferred this in order to be able to get the computed title, just in case it's used.
-    #set ($taggedDoc = $xwiki.getDocument($taggedDocRef))
+  #foreach ($taggedDoc in $documentList)
     #set ($taggedDocTitle = $services.rendering.escape($services.rendering.escape($taggedDoc.plainTitle, $wikimacro.doc.syntax), $wikimacro.doc.syntax))
     * [[$taggedDocTitle&gt;&gt;$services.rendering.escape($taggedDoc.fullName, $wikimacro.doc.syntax)]]
   #end
@@ -625,6 +643,84 @@
     </property>
     <property>
       <type/>
+    </property>
+  </object>
+  <object>
+    <name>XWiki.TaggedPagesMacro</name>
+    <number>4</number>
+    <className>XWiki.WikiMacroParameterClass</className>
+    <guid>e7dd31c9-a883-4463-9aa5-4b9d6c6691a6</guid>
+    <class>
+      <name>XWiki.WikiMacroParameterClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <defaultValue>
+        <disabled>0</disabled>
+        <name>defaultValue</name>
+        <number>4</number>
+        <prettyName>Parameter default value</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultValue>
+      <description>
+        <disabled>0</disabled>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Parameter description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <mandatory>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>mandatory</name>
+        <number>3</number>
+        <prettyName>Parameter mandatory</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </mandatory>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Parameter name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <type>
+        <disabled>0</disabled>
+        <name>type</name>
+        <number>5</number>
+        <prettyName>Parameter type</prettyName>
+        <size>60</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </type>
+    </class>
+    <property>
+      <defaultValue>updateDate</defaultValue>
+    </property>
+    <property>
+      <description>How to sort pages. One of "updateDate", "creationDate", "title". Default "updateDate"</description>
+    </property>
+    <property>
+      <mandatory>0</mandatory>
+    </property>
+    <property>
+      <name>sortBy</name>
+    </property>
+    <property>
+      <type>java.lang.String</type>
     </property>
   </object>
 </xwikidoc>
