@@ -246,9 +246,6 @@
 #set ($tree = "$!wikimacro.parameters.location")
 #set ($cssClass = "$!wikimacro.parameters.cssClass")
 #set ($limit = $!wikimacro.parameters.limit)
-#if ("$!limit" == '')
-  #set ($limit = -1)
-#end
 #set ($treeRef = $NULL)
 #if ($tree != '')
   #set($treeRef = $services.model.resolveSpace($tree, 'current'))
@@ -267,9 +264,6 @@
     #end
   #else
     #set ($discard = $documentList.add($xwiki.getDocument($dRef)))
-  #end
-  #if ($documentList.size() == $limit)
-    #break
   #end
 #end
 ##
@@ -290,6 +284,12 @@
   #set ($sortOrder = $sortMapObject.defaultOrder)
 #end
 #set ($documentList = $collectiontool.sort($documentList, "$sortBy:$sortOrder"))
+##
+## Limit
+##
+#if ("$!limit" != '')
+  #set ($documentList = $documentList.subList(0, $limit))
+#end
 ##
 ## Display
 ##
