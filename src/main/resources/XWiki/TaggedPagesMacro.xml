@@ -241,38 +241,28 @@
       <async_enabled>0</async_enabled>
     </property>
     <property>
-      <code>{{velocity}}
+      <code>{{velocity output="false"}}
 #set ($tag = "$!wikimacro.parameters.tag")
-#set ($tree = "$!wikimacro.parameters.location")
+#set ($parentSpace = "$!wikimacro.parameters.location")
 #set ($cssClass = "$!wikimacro.parameters.cssClass")
 #set ($limit = $!wikimacro.parameters.limit)
-#set ($treeRef = $NULL)
-#if ($tree != '')
-  #set($treeRef = $services.model.resolveSpace($tree, 'current'))
+##
+## Query
+##
+## Select
+#set ($xwqlSelect = "select doc.title, doc.fullName")
+## From
+#set ($xwqlFrom = "from Document as doc, doc.object(XWiki.TagClass) as tag")
+## Where
+#set ($xwqlWhere = "where :tag member of tag.tags")
+#if ("$!parentSpace" != '')
+  #set ($xwqlWhere = "$xwqlWhere and (doc.space like :space or doc.space like :spaceGlob)")
 #end
-##
-## Find pages
-##
-#set ($documentWithTagsList = $xwiki.tag.getDocumentsWithTag($tag))
-#set ($documentList = [])
-#foreach ($dName in $documentWithTagsList)
-  #set($dRef = $services.model.resolveDocument($dName, 'current'))
-  #if ($treeRef != $NULL)
-    ## check if the page is in the passed tree
-    #if ($dRef.hasParent($treeRef))
-      #set ($discard = $documentList.add($xwiki.getDocument($dRef)))
-    #end
-  #else
-    #set ($discard = $documentList.add($xwiki.getDocument($dRef)))
-  #end
-#end
-##
 ## Sort
-##
 #set ($sortMap = {
-  "updateDate": { "property": "contentUpdateDate", "defaultOrder": "desc" },
-  "creationDate": { "property": "creationDate", "defaultOrder": "desc" },
-  "title": { "property": "plainTitle", "defaultOrder": "asc" }
+  "updateDate": { "property": "doc.date", "defaultOrder": "desc" },
+  "creationDate": { "property": "doc.creationDate", "defaultOrder": "desc" },
+  "title": { "property": "doc.title", "defaultOrder": "asc" }
 })
 #set ($parameterSortBy = "$!wikimacro.parameters.sortBy")
 #set ($parameterSortOrder = "$!wikimacro.parameters.sortOrder")
@@ -283,24 +273,39 @@
 #else
   #set ($sortOrder = $sortMapObject.defaultOrder)
 #end
-#set ($documentList = $collectiontool.sort($documentList, "$sortBy:$sortOrder"))
-##
-## Limit
-##
-#if ("$!limit" != '')
-  #set ($documentList = $documentList.subList(0, $limit))
+#set ($xwqlOrderBy = "order by $sortBy $sortOrder")
+## Bind values
+#set ($query = $services.query.xwql("$xwqlSelect $xwqlFrom $xwqlWhere $xwqlOrderBy"))
+$query.bindValue("tag", $tag)
+#if ("$!parentSpace" != '')
+$query.bindValues({
+  "space": $parentSpace,
+  "spaceGlob": "${parentSpace}.%"
+})
 #end
+## Limit
+#if ("$!limit" != '')
+  $query.setLimit($limit)
+#end
+## Execute
+#set ($documentsResult = $query.execute())
+{{/velocity}}
+
+{{velocity}}
 ##
 ## Display
 ##
-#if ($documentList.size() &gt; 0)
+#if ($documentsResult.size() &gt; 0)
   (%class='taggedpages-list $services.rendering.escape($!cssClass)'%)
-  #foreach ($taggedDoc in $documentList)
-    #set ($taggedDocTitle = $services.rendering.escape($services.rendering.escape($taggedDoc.plainTitle, $wikimacro.doc.syntax), $wikimacro.doc.syntax))
-    * [[$taggedDocTitle&gt;&gt;$services.rendering.escape($taggedDoc.fullName, $wikimacro.doc.syntax)]]
+  #foreach ($documentResult in $documentsResult)
+    #set ($documentTitle = $documentResult[0])
+    #set ($documentFullName = $documentResult[1])
+    #set ($documentTitleEscaped = $services.rendering.escape($services.rendering.escape($documentTitle, $wikimacro.doc.syntax), $wikimacro.doc.syntax))
+    * [[$documentTitleEscaped&gt;&gt;$services.rendering.escape($documentFullName, $wikimacro.doc.syntax)]]
   #end
 #end
-{{/velocity}}</code>
+{{/velocity}}
+</code>
     </property>
     <property>
       <contentDescription/>
