@@ -320,7 +320,7 @@ $query.bindValues({
       <defaultCategory/>
     </property>
     <property>
-      <description>Lists the pages tagged with the passed tag, from the document tree passed as parameter.</description>
+      <description>Lists the pages tagged with the passed tag, from the pages tree passed as parameter.</description>
     </property>
     <property>
       <id>taggedpages</id>
@@ -404,7 +404,7 @@ $query.bindValues({
       <defaultValue/>
     </property>
     <property>
-      <description>The tag to display documents for.</description>
+      <description>The tag to display pages for.</description>
     </property>
     <property>
       <mandatory>1</mandatory>
@@ -482,7 +482,7 @@ $query.bindValues({
       <defaultValue/>
     </property>
     <property>
-      <description>The tree root under which to search for documents.</description>
+      <description>The tree root under which to search for tagged pages.</description>
     </property>
     <property>
       <mandatory>0</mandatory>
@@ -716,7 +716,7 @@ $query.bindValues({
       <defaultValue>updateDate</defaultValue>
     </property>
     <property>
-      <description>How to sort pages. One of "updateDate", "creationDate", "title". Default "updateDate"</description>
+      <description>Criteria for sorting the tagged pages, can be one of "updateDate", "creationDate", "title"; defaults to "updateDate".</description>
     </property>
     <property>
       <mandatory>0</mandatory>
@@ -794,7 +794,7 @@ $query.bindValues({
       <defaultValue/>
     </property>
     <property>
-      <description>Order to sort pages. One of "asc", "desc". Default depends to "sortBy" property.</description>
+      <description>The order of the sorting of the pages, can be one of "asc", "desc"; the default depends on the "sortBy" property.</description>
     </property>
     <property>
       <mandatory>0</mandatory>
