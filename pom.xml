@@ -29,7 +29,7 @@
   </parent>
   <groupId>org.xwiki.contrib</groupId>
   <artifactId>macro-taggedpages</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <name>Tagged Pages Macro</name>
   <packaging>xar</packaging>
   <description>Lists the pages tagged with the passed tag, from the document tree passed as parameter</description>
@@ -42,7 +42,7 @@
     <connection>scm:git:git://github.com/xwiki-contrib/macro-taggedpages.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/macro-taggedpages.git</developerConnection>
     <url>https://github.com/xwiki-contrib/macro-taggedpages</url>
-    <tag>HEAD</tag>
+    <tag>macro-taggedpages-1.1</tag>
   </scm>
   <developers>
     <developer>
