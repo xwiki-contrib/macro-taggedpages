@@ -250,14 +250,21 @@
 ## Query
 ##
 ## Select
-#set ($xwqlSelect = "select doc.title, doc.fullName")
+#set ($hqlSelect = "select doc.title, doc.fullName")
 ## From
-#set ($xwqlFrom = "from Document as doc, doc.object(XWiki.TagClass) as tag")
+#set ($hqlFrom = "from XWikiDocument as doc, BaseObject as obj, DBStringListProperty as prop join prop.list tag")
 ## Where
-#set ($xwqlWhere = "where :tag member of tag.tags")
+#set ($conditions = [
+  "obj.className = 'XWiki.TagClass'",
+  "obj.name = doc.fullName",
+  "obj.id = prop.id.id",
+  "prop.id.name = 'tags'",
+  "lower(tag) = lower(:tag)"
+])
 #if ("$!parentSpace" != '')
-  #set ($xwqlWhere = "$xwqlWhere and (doc.space like :space or doc.space like :spaceGlob)")
+  #set ($discard = $conditions.add("(doc.space like :space or doc.space like :spaceGlob)"))
 #end
+#set ($hqlWhere = "where $stringtool.join($conditions, ' and ')")
 ## Sort
 #set ($sortMap = {
   "updateDate": { "property": "doc.date", "defaultOrder": "desc" },
@@ -273,9 +280,9 @@
 #else
   #set ($sortOrder = $sortMapObject.defaultOrder)
 #end
-#set ($xwqlOrderBy = "order by $sortBy $sortOrder")
+#set ($hqlOrderBy = "order by $sortBy $sortOrder")
 ## Bind values
-#set ($query = $services.query.xwql("$xwqlSelect $xwqlFrom $xwqlWhere $xwqlOrderBy"))
+#set ($query = $services.query.hql("$hqlSelect $hqlFrom $hqlWhere $hqlOrderBy"))
 $query.bindValue("tag", $tag)
 #if ("$!parentSpace" != '')
 $query.bindValues({
