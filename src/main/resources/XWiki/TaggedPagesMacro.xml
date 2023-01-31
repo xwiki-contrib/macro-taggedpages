@@ -254,7 +254,7 @@
 ## Query
 ##
 ## Select
-#set ($hqlSelect = "select doc.title, doc.fullName")
+#set ($hqlSelect = "select doc.fullName")
 ## From
 #set ($hqlFrom = "from XWikiDocument as doc, BaseObject as obj, DBStringListProperty as prop join prop.list tag")
 ## Where
@@ -308,10 +308,9 @@ $query.bindValues({
 ##
 #if ($documentsResult.size() &gt; 0)
   (% class='taggedpages-list $!services.rendering.escape($cssClass)' $bulletStyle %)
-  #foreach ($documentResult in $documentsResult)
-    #set ($documentTitle = $documentResult[0])
-    #set ($documentFullName = $documentResult[1])
-    #set ($documentTitleEscaped = $services.rendering.escape($services.rendering.escape($documentTitle, $wikimacro.doc.syntax), $wikimacro.doc.syntax))
+  #foreach ($documentFullName in $documentsResult)
+    #set ($document = $xwiki.getDocument($documentFullName))
+    #set ($documentTitleEscaped = $services.rendering.escape($services.rendering.escape($document.plainTitle, $wikimacro.doc.syntax), $wikimacro.doc.syntax))
     * [[$documentTitleEscaped&gt;&gt;$services.rendering.escape($documentFullName, $wikimacro.doc.syntax)]]
   #end
 #end
