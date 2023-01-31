@@ -244,8 +244,12 @@
       <code>{{velocity output="false"}}
 #set ($tag = "$!wikimacro.parameters.tag")
 #set ($parentSpace = "$!wikimacro.parameters.location")
-#set ($cssClass = "$!wikimacro.parameters.cssClass")
 #set ($limit = $!wikimacro.parameters.limit)
+#set ($cssClass = "$!wikimacro.parameters.cssClass")
+#set ($bulletStyle = "")
+#if ("$!wikimacro.parameters.bullet" != '')
+  #set ($bulletStyle = "style=""list-style-type: ${escapetool.S}$!services.rendering.escape($wikimacro.parameters.bullet, $wikimacro.doc.syntax) ${escapetool.S}""")
+#end
 ##
 ## Query
 ##
@@ -303,7 +307,7 @@ $query.bindValues({
 ## Display
 ##
 #if ($documentsResult.size() &gt; 0)
-  (%class='taggedpages-list $services.rendering.escape($!cssClass)'%)
+  (% class='taggedpages-list $!services.rendering.escape($cssClass)' $bulletStyle %)
   #foreach ($documentResult in $documentsResult)
     #set ($documentTitle = $documentResult[0])
     #set ($documentFullName = $documentResult[1])
@@ -808,6 +812,84 @@ $query.bindValues({
     </property>
     <property>
       <name>sortOrder</name>
+    </property>
+    <property>
+      <type>java.lang.String</type>
+    </property>
+  </object>
+  <object>
+    <name>XWiki.TaggedPagesMacro</name>
+    <number>6</number>
+    <className>XWiki.WikiMacroParameterClass</className>
+    <guid>f97d69c4-e132-42a0-94c7-5df3ea8c1e26</guid>
+    <class>
+      <name>XWiki.WikiMacroParameterClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <defaultValue>
+        <disabled>0</disabled>
+        <name>defaultValue</name>
+        <number>4</number>
+        <prettyName>Parameter default value</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultValue>
+      <description>
+        <disabled>0</disabled>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Parameter description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <mandatory>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>mandatory</name>
+        <number>3</number>
+        <prettyName>Parameter mandatory</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </mandatory>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Parameter name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <type>
+        <disabled>0</disabled>
+        <name>type</name>
+        <number>5</number>
+        <prettyName>Parameter type</prettyName>
+        <size>60</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </type>
+    </class>
+    <property>
+      <defaultValue/>
+    </property>
+    <property>
+      <description>The string to be used as list bullet.</description>
+    </property>
+    <property>
+      <mandatory>0</mandatory>
+    </property>
+    <property>
+      <name>bullet</name>
     </property>
     <property>
       <type>java.lang.String</type>
