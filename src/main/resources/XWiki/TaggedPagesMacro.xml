@@ -501,7 +501,7 @@ $query.bindValues({
       <name>location</name>
     </property>
     <property>
-      <type/>
+      <type>org.xwiki.model.reference.DocumentReference</type>
     </property>
   </object>
   <object>
