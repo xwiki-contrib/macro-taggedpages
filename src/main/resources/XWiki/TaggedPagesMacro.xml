@@ -289,10 +289,16 @@
 #set ($query = $services.query.hql("$hqlSelect $hqlFrom $hqlWhere $hqlOrderBy"))
 $query.bindValue("tag", $tag)
 #if ("$!parentSpace" != '')
-$query.bindValues({
-  "space": $parentSpace,
-  "spaceGlob": "${parentSpace}.%"
-})
+  #set ($parentSpaceDocument = $xwiki.getDocument("$parentSpace"))
+  #if ($parentSpaceDocument.isNew())
+    #set ($spaceName = '')
+  #else
+    #set ($spaceName = $parentSpaceDocument.space)
+  #end
+  $query.bindValues({
+    "space": $spaceName,
+    "spaceGlob": "${spaceName}.%"
+  })
 #end
 ## Limit
 #if ("$!limit" != '')
@@ -492,7 +498,7 @@ $query.bindValues({
       <defaultValue/>
     </property>
     <property>
-      <description>The tree root under which to search for tagged pages.</description>
+      <description>The tree root document under which to search for tagged pages.</description>
     </property>
     <property>
       <mandatory>0</mandatory>
