@@ -289,15 +289,9 @@
 #set ($query = $services.query.hql("$hqlSelect $hqlFrom $hqlWhere $hqlOrderBy"))
 $query.bindValue("tag", $tag)
 #if ("$!parentSpace" != '')
-  #set ($parentSpaceDocument = $xwiki.getDocument("$parentSpace"))
-  #if ($parentSpaceDocument.isNew())
-    #set ($spaceName = '')
-  #else
-    #set ($spaceName = $parentSpaceDocument.space)
-  #end
   $query.bindValues({
-    "space": $spaceName,
-    "spaceGlob": "${spaceName}.%"
+    "space": $parentSpace,
+    "spaceGlob": "${parentSpace}.%"
   })
 #end
 ## Limit
@@ -498,7 +492,7 @@ $query.bindValue("tag", $tag)
       <defaultValue/>
     </property>
     <property>
-      <description>The tree root document under which to search for tagged pages.</description>
+      <description>The tree root under which to search for tagged pages.</description>
     </property>
     <property>
       <mandatory>0</mandatory>
@@ -507,7 +501,7 @@ $query.bindValue("tag", $tag)
       <name>location</name>
     </property>
     <property>
-      <type>org.xwiki.model.reference.DocumentReference</type>
+      <type>java.lang.String</type>
     </property>
   </object>
   <object>
